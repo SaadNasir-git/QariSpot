@@ -15,8 +15,8 @@ const fetchQaris = async () => {
   }
 }
 
-const Home = async () => { // Make this async
-  let Qaris = await fetchQaris() // Add await here
+const Home = () => {
+  let Qaris = fetchQaris() // Add await here
 
   return (
     <HomePage fetchedQaris={Qaris} />
