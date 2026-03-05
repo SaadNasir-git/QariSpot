@@ -13,8 +13,8 @@ const Card = ({ imageUrl, QariName }: { imageUrl: string, QariName: string }) =>
           alt={QariName}
         />
       </div>
-      <div className="w-full h-auto sm:h-10 pl-1.5 py-2 sm:py-3 text-white text-sm sm:text-base text-center sm:text-left">
-        <span>
+      <div className="w-full h-auto sm:h-10 pl-1.5 py-2 sm:py-3 text-white text-sm sm:text-base text-left">
+        <span className="block truncate" title={QariName}>
           {QariName}
         </span>
       </div>
