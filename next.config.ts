@@ -1,0 +1,46 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+    allowedDevOrigins: ['http://192.168.1.10:3000'],
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff',
+                    },
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'DENY',
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin',
+                    },
+                ],
+            },
+            {
+                source: '/sw.js',
+                headers: [
+                    {
+                        key: 'Content-Type',
+                        value: 'application/javascript; charset=utf-8',
+                    },
+                    {
+                        key: 'Cache-Control',
+                        value: 'no-cache, no-store, must-revalidate',
+                    },
+                    {
+                        key: 'Content-Security-Policy',
+                        // Added 'unsafe-eval' for development and blob: for worker execution
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; connect-src 'self' *.cloudinary.com;",
+                    },
+                ],
+            },
+        ];
+    },
+};
+
+export default nextConfig;
