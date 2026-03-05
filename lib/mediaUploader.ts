@@ -10,7 +10,7 @@ export class MediaUploader {
         const buffer = Buffer.from(await file.arrayBuffer());
 
         const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
-            cloudinary.uploader.upload_stream(
+            cloudinary.uploader.upload_large_stream(
                 {
                     folder: folderName,
                     resource_type: 'auto',
