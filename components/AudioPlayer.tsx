@@ -47,10 +47,19 @@ const AudioPlayer = () => {
       soundRef.current.unload()
     }
 
+    let url = '';
+
+    const response = await fetch(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`)
+    if (response.ok) {
+      url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`
+    } else {
+      url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${Params}.mp3`
+    }
+
     soundRef.current = new Howl({
-      src: [`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`],
+      src: [url],
       html5: true,
-      preload:'metadata',
+      preload: 'metadata',
       autoplay: true,
       loop: loop,
       onload: () => {
@@ -104,7 +113,7 @@ const AudioPlayer = () => {
       soundRef.current = new Howl({
         src: [PlaybackUrl],
         html5: true,
-        preload:'metadata',
+        preload: 'metadata',
         format: ['mp3'],
         autoplay: true,
         loop: loop,
@@ -223,13 +232,13 @@ const AudioPlayer = () => {
 
                 {/* Status Badge */}
                 <div className="mt-1">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${audioId && typeof(audioId) === 'number' && !listenParam
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${audioId && typeof (audioId) === 'number' && !listenParam
                     ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20'
                     : 'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20'
                     }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${audioId && typeof(audioId) === "number" ? 'bg-amber-400' : 'bg-emerald-400'
+                    <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${audioId && typeof (audioId) === "number" ? 'bg-amber-400' : 'bg-emerald-400'
                       }`}></span>
-                    {audioId && typeof(audioId) === 'number' && !listenParam ? 'Offline Mode' : 'Streaming'}
+                    {audioId && typeof (audioId) === 'number' && !listenParam ? 'Offline Mode' : 'Streaming'}
                   </span>
                 </div>
               </div>
