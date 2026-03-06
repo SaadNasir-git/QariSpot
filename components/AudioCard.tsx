@@ -62,7 +62,7 @@ const AudioCard = ({ audio, qari }: { audio: surah, qari: qari }) => {
             : 'text-green-500 group-hover:text-green-400'
           }
     `}>
-          {audio.name}
+          Surah {audio.name}
         </span>
       </div>
 
