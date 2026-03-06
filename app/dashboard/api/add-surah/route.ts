@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { MediaUploadResult, MediaUploader } from "@/lib/mediaUploader";
 import { tryCatchBlock } from "@/lib/trycatchBlock";
 import getDatabaseConnection from "@/lib/mysql2";
+import { ResultSetHeader } from "mysql2";
 
 const targetFolder = 'media-manager/audio-manager'
 
@@ -14,42 +15,46 @@ cloudinary.config({
 });
 
 export async function POST(request: NextRequest) {
-    return await tryCatchBlock(async () => {
-        const formData = await request.formData();
-        const name: any = formData.get('name');
-        const surah = formData.get('surah') as File;
-        const qariId = Number(formData.get('qariId'));
-        const audioDuration = Number(formData.get('audioDuration'))
-        const surahNo = Number(formData.get('surahNo'))
+  return await tryCatchBlock(async () => {
+    const formData = await request.formData();
+    const name = formData.get('name')?.toString() || "";
+    const surah = formData.get('surah') as File | null;
+    const qariId = Number(formData.get('qariId'));
+    const audioDuration = Number(formData.get('audioDuration'));
+    const surahNo = Number(formData.get('surahNo'));
+    const surahSize = Number(formData.get('surahSize'));
 
-        const isOk = !name || !surahNo || surahNo === 0 || !qariId || !surah || !audioDuration || audioDuration === 0
+    if (!name || !surahNo || !qariId || !audioDuration) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    }
 
-        if (isOk) {
-            return NextResponse.json({
-                message: 'Data is required'
-            }, {
-                status: 400
-            })
-        }
+    const conn = await getDatabaseConnection();
+    const sanitizedName = name.replace(/[^\w\s]/g, ' ');
 
-        let uploadedAudio: MediaUploadResult;
-        try {
-            uploadedAudio = await MediaUploader.uploadFile(surah, targetFolder);
-        } catch (uploadError) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'Failed to upload product images'
-                },
-                { status: 500 }
-            );
-        }
-        const conn = await getDatabaseConnection();
-        await conn.query('INSERT INTO surah(name, qariId, url, durationSeconds, fileSizeMb, surahNo) VALUE(?, ?, ?, ?, ?, ?)', [name.replace(/[^\w\s]/g, ' '), qariId, uploadedAudio.publicUrl, audioDuration, parseFloat((surah.size / (1024 * 1024)).toFixed(2)), surahNo])
-        return NextResponse.json({
-            success: true
-        }, {
-            status: 200
-        })
-    }, request)
+    let audioUrl = "";
+    let finalSizeMb = 0;
+
+    if (surah) {
+      try {
+        const uploadedAudio: MediaUploadResult = await MediaUploader.uploadFile(surah, targetFolder);
+        audioUrl = uploadedAudio.publicUrl;
+        finalSizeMb = parseFloat((surah.size / (1024 * 1024)).toFixed(2));
+      } catch (uploadError) {
+        return NextResponse.json({ success: false, error: 'Upload failed' }, { status: 500 });
+      }
+    } else {
+      finalSizeMb = parseFloat((surahSize / (1024 * 1024)).toFixed(2));
+    }
+
+    const [result] = await conn.query<ResultSetHeader>(
+      'INSERT INTO surah(name, qariId, url, durationSeconds, fileSizeMb, surahNo) VALUES(?, ?, ?, ?, ?, ?)',
+      [sanitizedName, qariId, audioUrl, audioDuration, finalSizeMb, surahNo]
+    );
+
+    return NextResponse.json({ 
+      success: true, 
+      recordId: result.insertId 
+    }, { status: 200 });
+
+  }, request);
 }
