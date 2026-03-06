@@ -30,7 +30,7 @@ const AddSurah = () => {
       if (response.status !== 200) throw new Error('Failed to fetch qaris')
       setQaris(response.data.data)
     } catch (error) {
-      sileo.error({title:'Failed to load qaris'})
+      sileo.error({ title: 'Failed to load qaris' })
     } finally {
       setLoadingQaris(false)
     }
@@ -41,22 +41,23 @@ const AddSurah = () => {
 
     // Validation
     if (!surahName.trim()) {
-      sileo.error({title:'Please enter Surah name'})
+      sileo.error({ title: 'Please enter Surah name' })
       return
     }
 
     if (!selectedQari) {
-      sileo.error({title:'Please select a Qari'})
+      sileo.error({ title: 'Please select a Qari' })
       return
     }
 
     if (!audioFile) {
-      sileo.error({title:'Please upload audio file'})
+      sileo.error({ title: 'Please upload audio file' })
       return
     }
 
     if (!surahNO) {
-      sileo.error({title:'Please enter Surah Number'})
+      sileo.error({ title: 'Please enter Surah Number' })
+      return
     }
 
     setIsSubmitting(true)
@@ -65,25 +66,48 @@ const AddSurah = () => {
       const formData = new FormData()
       formData.append('name', surahName)
       formData.append('qariId', selectedQari)
-      formData.append('surah', audioFile)
       formData.append('audioDuration', Duration.toString())
       formData.append('surahNo', surahNO);
+      formData.append('surahSize', audioFile.size.toString())
 
-      const response = await axios.post('/dashboard/api/add-surah', formData)
-
-      if (response.status !== 200) {
-        sileo.error({title:'Failed to add surah'})
+      if (audioFile.size <= 4194304) {
+        formData.append('surah', audioFile)
+        const response = await axios.post('/dashboard/api/add-surah', formData);
+        if (response.status !== 200 && response.status !== 201) {
+          sileo.error({ title: 'Failed to add surah' })
+        } else {
+          sileo.success({ title: 'Surah added successfully!' })
+          setsurahNO('')
+          setDuration(0)
+          setSurahName('')
+          setSelectedQari('')
+          setAudioFile(null)
+        }
       } else {
-        sileo.success({title:'Surah added successfully!'})
-        setsurahNO('')
-        setDuration(0)
-        setSurahName('')
-        setSelectedQari('')
-        setAudioFile(null)
+        const response = await axios.post('/dashboard/api/add-surah', formData);
+        const cloudinaryData = new FormData();
+        cloudinaryData.append("file", audioFile);
+        cloudinaryData.append("upload_preset", process.env.NEXT_PUBLIC_PRESET_NAME);
+
+        cloudinaryData.append("context", `recordId=${response.data.recordId}`);
+        const cloudinaryResponse = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+          method: "POST",
+          body: cloudinaryData,
+        });
+
+        if (cloudinaryResponse.ok) {
+          sileo.success({ title: 'Surah added successfully!' })
+          setsurahNO('')
+          setDuration(0)
+          setSurahName('')
+          setSelectedQari('')
+          setAudioFile(null)
+        }
       }
 
     } catch (error) {
-      sileo.error({title:'Failed to add Surah'})
+      console.log(error)
+      sileo.error({ title: 'Failed to add Surah' })
     } finally {
       setIsSubmitting(false)
     }
