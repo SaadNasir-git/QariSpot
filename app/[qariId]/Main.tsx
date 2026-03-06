@@ -194,7 +194,7 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
           )}
         </div>
       </div>
-
+      {/*
       <div className='w-full z-50 py-5 flex justify-center items-center pointer-events-none'>
         <button
           onClick={loadMore}
@@ -205,30 +205,20 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
                hover:scale-105 active:scale-95 border border-white/10
                backdrop-blur-sm"
         >
-          {/* Animated icon */}
           <div className="relative">
             <ArrowBigDownDash
               size={22}
               className="animate-bounce group-hover:animate-none transition-transform translate-y-0.5"
             />
-            {/* Pulse effect */}
             <div className="absolute inset-0 animate-ping bg-white/20 rounded-full opacity-0 group-hover:opacity-100" />
           </div>
 
-          {/* Text */}
           <span className="font-medium text-sm">Load More Surahs</span>
 
-          {/* Loading indicator (optional - add loading state) */}
-          {/* {isLoading && (
-      <div className="absolute inset-0 bg-green-600 rounded-full flex items-center justify-center">
-        <Loader2 className="w-5 h-5 animate-spin" />
-      </div>
-    )} */}
-
-          {/* Glow effect */}
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity -z-10" />
         </button>
       </div>
+      */}
     </div>
   )
 }
