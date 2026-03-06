@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ surah }, { status: 200 });
         }
 
-        const [surah] = await conn.query<RowDataPacket[]>('SELECT * FROM surah WHERE qariId=? AND url IS NOT NULL ORDER BY surahNo ASC LIMIT ? OFFSET ?', [Number(qariId), 10, offset ? Number(offset) : 0])
+        const [surah] = await conn.query<RowDataPacket[]>('SELECT * FROM surah WHERE qariId=? AND url IS NOT NULL ORDER BY surahNo ASC', [Number(qariId)])
 
         return NextResponse.json({
             surah
