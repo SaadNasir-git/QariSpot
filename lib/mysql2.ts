@@ -32,7 +32,7 @@ const getDatabaseConnection = async (): Promise<mysql.Connection> => {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       ssl: sslOptions, // use it if you are using aiven
-      connectTimeout: 5000, // 5 second timeout
+      connectTimeout: 5000,
       supportBigNumbers: true,
       bigNumberStrings: true
     });
