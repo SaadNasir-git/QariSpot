@@ -7,8 +7,11 @@ export const revalidate = 0;
 const fetchQaris = async () => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qaris`);
-    const data = (await res.json()).data
-    return data
+    if(res.ok){
+       const data = (await res.json()).data
+       return data
+    } else
+      return []
   } catch (error) {
     return []
   }
