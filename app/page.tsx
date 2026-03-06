@@ -1,4 +1,3 @@
-import getDatabaseConnection from "@/lib/mysql2";
 import HomePage from "./HomePage";
 import { RowDataPacket } from "mysql2";
 
@@ -7,8 +6,8 @@ export const revalidate = 0;
 
 const fetchQaris = async () => {
   try {
-    const conn = await getDatabaseConnection();
-    const [data] = await conn.query<RowDataPacket[] & qari[]>('SELECT * FROM qari');
+    const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qaris`);
+    const data = (await res.json()).data
     return data
   } catch (error) {
     return []
@@ -16,7 +15,7 @@ const fetchQaris = async () => {
 }
 
 const Home = () => {
-  let Qaris = fetchQaris() // Add await here
+  let Qaris = fetchQaris()
 
   return (
     <HomePage fetchedQaris={Qaris} />
