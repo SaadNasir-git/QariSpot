@@ -48,8 +48,9 @@ const AudioPlayer = () => {
     }
 
     soundRef.current = new Howl({
-      src: [`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1//media-manager/audio-manager/${Params}.mp3`],
+      src: [`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`],
       html5: true,
+      preload:'metadata',
       autoplay: true,
       loop: loop,
       onload: () => {
@@ -103,6 +104,7 @@ const AudioPlayer = () => {
       soundRef.current = new Howl({
         src: [PlaybackUrl],
         html5: true,
+        preload:'metadata',
         format: ['mp3'],
         autoplay: true,
         loop: loop,
