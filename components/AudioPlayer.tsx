@@ -84,6 +84,7 @@ const AudioPlayer = () => {
     if (listenParam) {
 
       setAudio(listenParam)
+      PlayOnline(listenParam)
 
     } else if (audioId && typeof audioId === 'string') {
 
