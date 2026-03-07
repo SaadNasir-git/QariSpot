@@ -9,6 +9,7 @@ const amiri700 = Amiri({ weight: '700' })
 import { CldImage } from 'next-cloudinary';
 import { Search, X, ArrowBigDownDash } from 'lucide-react';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 
 const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Promise<surah[]> }) => {
   const qari = use(qariData)
@@ -18,6 +19,20 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const searchInputRef = useRef(null);
   const [offset, setOffset] = useState<number>(10)
+  const searchParams = useSearchParams();
+  const listenParam = searchParams.get('listen')
+
+  useEffect(() => {
+    if (listenParam) {
+      const element = document.getElementById(listenParam);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  }, [listenParam])
 
   // Handle search filtering
   useEffect(() => {
