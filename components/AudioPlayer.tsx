@@ -47,17 +47,8 @@ const AudioPlayer = () => {
       soundRef.current.unload()
     }
 
-    let url = '';
-
-    const response = await fetch(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`)
-    if (response.ok) {
-      url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/media-manager/audio-manager/${Params}.mp3`
-    } else {
-      url = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${Params}.mp3`
-    }
-
     soundRef.current = new Howl({
-      src: [url],
+      src: [`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${Params}.mp3`],
       html5: true,
       preload: 'metadata',
       autoplay: true,
