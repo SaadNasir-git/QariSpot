@@ -51,6 +51,26 @@ export const metadata: Metadata = {
     },
     description: APP_DESCRIPTION,
   },
+  icons: {
+    icon: [
+      {
+        url: '/quran.svg',
+        type: 'image/svg+xml',
+      },
+      {
+        url: '/quran.png',
+        type: 'image/png',
+      },
+    ],
+    shortcut: '/quran.png',
+    apple: [
+      {
+        url: '/quran.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
