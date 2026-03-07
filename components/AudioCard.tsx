@@ -4,22 +4,15 @@ import { EllipsisVertical } from "lucide-react"
 import { useState, useRef, useCallback, useEffect } from "react"
 import Popover from "./Popover"
 import { handleClosePopover, handleShowPopover } from "@/lib/clientSidefunctions"
-import { useRouter } from "next/navigation"
 import { useAudio } from "@/contexts/AudioContext"
 
 const AudioCard = ({ audio, qari }: { audio: surah, qari: qari }) => {
   const [activePopoverId, setActivePopoverId] = useState<number | null>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
   const { setAudio, audioId } = useAudio()
 
   const handleClick = useCallback(() => {
-    if (window.location.search) {
       setAudio(audio.url)
-      router.push(window.location.pathname, { scroll: false })
-    } else {
-      setAudio(audio.url)
-    }
   }, [])
 
   return (
