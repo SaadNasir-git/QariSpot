@@ -72,7 +72,6 @@ const AddSurah = () => {
 
       const response = await axios.post('/dashboard/api/add-surah', formData);
       if(response.status !== 200){
-        console.log(error)
         sileo.error({ title: 'Failed to add Surah' })
         return;
       }
