@@ -34,7 +34,7 @@ const AudioPlayer = () => {
   const [loop, setLoop] = useState<boolean>(false)
   const { getPlaybackUrl, getRecordById, isInLibrary, addToLibrary } = useLibrary()
   const [audioData, setaudioData] = useState<surah & { qariName: string }>();
-  const { audioId } = useAudio()
+  const { audioId, setAudio } = useAudio()
 
   const isAudioInLibrary = isInLibrary(audioData?.id)
 
@@ -83,7 +83,7 @@ const AudioPlayer = () => {
   const initialFunction = useCallback(async () => {
     if (listenParam) {
 
-      PlayOnline(listenParam)
+      setAudio(listenParam)
 
     } else if (audioId && typeof audioId === 'string') {
 
