@@ -14,10 +14,13 @@ const AudioCard = ({ audio, qari }: { audio: surah, qari: qari }) => {
   const { setAudio, audioId } = useAudio()
 
   const handleClick = useCallback(() => {
-    if (window.location.search) router.push(window.location.pathname, { scroll: false })
-    setAudio(audio.url.replace('media-manager/audio-manager/', ''))
-  }, [],
-  )
+    if (window.location.search) {
+      setAudio(audio.url)
+      router.push(window.location.pathname, { scroll: false })
+    } else {
+      setAudio(audio.url)
+    }
+  }, [])
 
   return (
     <div
