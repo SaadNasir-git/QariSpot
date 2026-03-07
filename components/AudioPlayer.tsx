@@ -81,13 +81,8 @@ const AudioPlayer = () => {
   )
 
   const initialFunction = useCallback(async () => {
-    if (listenParam) {
 
-      setAudio(listenParam)
-      PlayOnline(listenParam)
-
-    } else if (audioId && typeof audioId === 'string') {
-
+    if (audioId && typeof audioId === 'string') {
       PlayOnline(audioId)
 
     } else if (audioId && typeof audioId === 'number') {
@@ -133,9 +128,12 @@ const AudioPlayer = () => {
           clearInterval(progressInterval.current)
         }
       })
-    }
+    } else if (listenParam) {
+      setAudio(listenParam)
+      
+    } 
   }, [listenParam, audioId, getPlaybackUrl, getRecordById])
-
+  
   useEffect(() => {
     initialFunction()
     return () => {
