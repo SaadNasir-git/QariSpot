@@ -22,6 +22,7 @@ const AudioCard = ({ audio, qari }: { audio: surah, qari: qari }) => {
   return (
     <div
       onClick={handleClick}
+      id={audio.id.toString()}
       className={`
     w-full h-20 rounded-lg transition-all duration-300 ease-in-out 
     flex justify-between items-center md:p-5 p-2 group cursor-pointer
