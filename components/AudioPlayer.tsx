@@ -51,6 +51,7 @@ const AudioPlayer = () => {
       html5: true,
       preload: 'metadata',
       loop: loop,
+      volume: 1,
       onload: () => {
         if (soundRef.current) {
           setDuration(soundRef.current.duration())
@@ -65,6 +66,9 @@ const AudioPlayer = () => {
           }
           if (progressInterval.current) {
             clearInterval(progressInterval.current)
+          }
+          if(volumeRef.current){
+            volumeRef.current.value = soundRef.current.volume().toString()
           }
         }
       },
@@ -208,7 +212,6 @@ const AudioPlayer = () => {
                       type="range"
                       min={0}
                       max={1}
-                      value={1}
                       step={0.01}
                       ref={volumeRef}
                       onChange={handleVolumeChange}
