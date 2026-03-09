@@ -175,7 +175,7 @@ const AudioPlayer = () => {
 
             </div>
 
-            <div className="w-full flex flex-col gap-4 md:px-2 px-2 pt-4">
+            <div className="w-full flex flex-col md:px-2 px-2 pt-4 pb-2">
 
               {/*Action Buttons*/}
               <div className="flex justify-between">
@@ -622,7 +622,7 @@ export default AudioPlayer
 //                   )}
 //                 </button>
 
-//                 {/* Action Buttons */}
+//                 {/*  */}
 //                 <div className="flex justify-self-end-safe items-center gap-2 w-full justify-end">
 //                   {/* Repeat Button */}
 //                   <div>
