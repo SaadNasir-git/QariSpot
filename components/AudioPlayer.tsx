@@ -51,7 +51,7 @@ const AudioPlayer = () => {
       html5: true,
       preload: 'metadata',
       loop: loop,
-      volume: 1,
+      volume: parseFloat(volumeRef.current.value),
       onload: () => {
         if (soundRef.current) {
           setDuration(soundRef.current.duration())
@@ -66,9 +66,6 @@ const AudioPlayer = () => {
           }
           if (progressInterval.current) {
             clearInterval(progressInterval.current)
-          }
-          if(volumeRef.current){
-            volumeRef.current.value = soundRef.current.volume().toString()
           }
         }
       },
@@ -213,6 +210,7 @@ const AudioPlayer = () => {
                       min={0}
                       max={1}
                       step={0.01}
+                      defaultValue={1}
                       ref={volumeRef}
                       onChange={handleVolumeChange}
                       className="w-16 h-1 bg-white/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
