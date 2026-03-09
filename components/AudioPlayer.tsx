@@ -102,9 +102,9 @@ const AudioPlayer = () => {
 
   const initialFunction = useCallback(async () => {
     if (audioId && typeof audioId === 'string') {
+      PlayAudio(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${audioId}.mp3`)
       const res = await axios.post('/api/surahdata', { url: audioId })
       setaudioData(res.data.data);
-      PlayAudio(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${audioId}.mp3`)
     } else if (audioId && typeof audioId === 'number') {
       const PlaybackUrl = getPlaybackUrl(audioId)
       setaudioData(getRecordById(audioId))
