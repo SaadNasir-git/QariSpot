@@ -50,6 +50,7 @@ const AudioPlayer = () => {
       autoplay: true,
       html5: true,
       preload: 'metadata',
+      format: ['mp3'],
       loop: loop,
       volume: volumeRef.current?.value ? parseFloat(volumeRef.current.value) : volumeRef.current?.defaultValue ? parseFloat(volumeRef.current.defaultValue) : 1,
       onload: () => {
@@ -104,6 +105,8 @@ const AudioPlayer = () => {
       setaudioData(res.data.data);
     } else if (audioId && typeof audioId === 'number') {
       const PlaybackUrl = getPlaybackUrl(audioId)
+      if (!PlaybackUrl) return
+      
       setaudioData(getRecordById(audioId))
       PlayAudio(PlaybackUrl)
     } else if (listenParam) {
