@@ -47,9 +47,9 @@ const AudioPlayer = () => {
 
     soundRef.current = new Howl({
       src: [url],
+      autoplay: true,
       html5: true,
       preload: 'metadata',
-      autoplay: true,
       loop: loop,
       onload: () => {
         if (soundRef.current) {
@@ -91,6 +91,9 @@ const AudioPlayer = () => {
         }
       }
     })
+    if (duration === 0 && soundRef.current) {
+      setDuration(soundRef.current.duration())
+    }
   }, [])
 
   const initialFunction = useCallback(async () => {
@@ -172,7 +175,7 @@ const AudioPlayer = () => {
 
             </div>
 
-            <div className="w-full flex flex-col gap-4 md:px-0 px-2 py-2">
+            <div className="w-full flex flex-col gap-4 md:px-2 px-2 pt-4">
 
               {/*Action Buttons*/}
               <div className="flex justify-between">
@@ -205,6 +208,7 @@ const AudioPlayer = () => {
                       type="range"
                       min={0}
                       max={1}
+                      value={1}
                       step={0.01}
                       ref={volumeRef}
                       onChange={handleVolumeChange}
@@ -217,6 +221,7 @@ const AudioPlayer = () => {
               <div className="flex items-center gap-2 w-full">
                 <span className="text-xs text-white/40 w-8 text-right" ref={currentTimeRef}>
                   {/* {formatTime(soundRef.current.seek())} */}
+                  00:00
                 </span>
                 <div className="flex-1 relative group">
                   <input
