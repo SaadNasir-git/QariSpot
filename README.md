@@ -6,4 +6,4 @@ and then
 ```
 npm run dev
 ```
-and you are ready to go! bye
+That's not enough.
