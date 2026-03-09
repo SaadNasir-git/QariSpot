@@ -74,7 +74,7 @@ const AudioPlayer = () => {
       },
       onplay: () => {
         setisPlaying(true)
-        progressInterval.current = setInterval(updateProgress, 100);
+        progressInterval.current = setInterval(updateProgress, 1000);
       },
       onpause: () => {
         setisPlaying(false)
