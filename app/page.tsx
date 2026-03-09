@@ -1,5 +1,4 @@
 import HomePage from "./HomePage";
-import { RowDataPacket } from "mysql2";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

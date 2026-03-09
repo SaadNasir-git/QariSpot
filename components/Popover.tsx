@@ -424,7 +424,7 @@ const Popover = ({
           <button
             onClick={(e) => {
               if (libraryState !== 'downloading' && !isAudioInLibrary) {
-                handleAddToLibrary(e, audio, libraryState, setLibraryState, setDownloadProgress, qari, isInLibrary, addToLibrary)
+                handleAddToLibrary({e, audio, libraryState, setLibraryState, setDownloadProgress, qari, isInLibrary, addToLibrary})
                 onClose()
               }
             }}

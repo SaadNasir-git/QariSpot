@@ -21,14 +21,14 @@ export const handleDownload = async (e: MouseEvent<HTMLButtonElement>, downloadS
         link.download = `${cleanFileName}.mp3`;
         link.target = '_blank';
         link.style.display = 'none'; // Hide the link
-        
+
         // Check if the link is already in the DOM before appending
         if (!document.body.contains(link)) {
             document.body.appendChild(link);
         }
-        
+
         link.click();
-        
+
         // Use setTimeout to ensure the click event has completed
         setTimeout(() => {
             if (document.body.contains(link)) {
@@ -44,13 +44,27 @@ export const handleDownload = async (e: MouseEvent<HTMLButtonElement>, downloadS
     }
 }
 
-export const handleAddToLibrary = async (e: MouseEvent<HTMLButtonElement>, audio: surah, libraryState: states, setLibraryState: (state: states) => void, setDownloadProgress: (n: number) => void, qari: qari, isInLibrary: (audioId: number) => boolean, addToLibrary: (audio: surah, blob: Blob, qariId: number, qariName: string) => Promise<boolean>) => {
+
+interface HandleAddToLibraryParams {
+    e: MouseEvent<HTMLButtonElement>;
+    audio: surah;
+    libraryState: states;
+    setLibraryState: (state: states) => void;
+    setDownloadProgress?: (n: number) => void;
+    qari: qari;
+    isInLibrary: (audioId: number) => boolean;
+    addToLibrary: (audio: surah, blob: Blob, qariId: number, qariName: string) => Promise<boolean>;
+}
+
+export const handleAddToLibrary = async ({ e, audio, libraryState, setLibraryState, setDownloadProgress, qari, isInLibrary, addToLibrary }: HandleAddToLibraryParams) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (libraryState === 'downloading' || isInLibrary(audio.id)) return;
     setLibraryState('downloading');
-    setDownloadProgress(0);
+    if (setDownloadProgress) {
+        setDownloadProgress(0);
+    }
 
     try {
         const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -77,7 +91,9 @@ export const handleAddToLibrary = async (e: MouseEvent<HTMLButtonElement>, audio
 
                 if (total > 0) {
                     const progress = Math.round((loaded / total) * 100);
-                    setDownloadProgress(progress);
+                    if (setDownloadProgress) {
+                        setDownloadProgress(progress);
+                    }
                 }
             }
         }
@@ -88,7 +104,9 @@ export const handleAddToLibrary = async (e: MouseEvent<HTMLButtonElement>, audio
         setLibraryState('completed');
         setTimeout(() => {
             setLibraryState('idle');
-            setDownloadProgress(0);
+            if (setDownloadProgress) {
+                setDownloadProgress(0);
+            }
         }, 2000);
 
     } catch (error) {
@@ -99,18 +117,18 @@ export const handleAddToLibrary = async (e: MouseEvent<HTMLButtonElement>, audio
 };
 
 export const handleShowPopover = (
-  e: React.MouseEvent<HTMLButtonElement>, 
-  audioId: number, 
-  setActivePopoverId: (value: number | null) => void, 
-  activePopoverId: number | null
+    e: React.MouseEvent<HTMLButtonElement>,
+    audioId: number,
+    setActivePopoverId: (value: number | null) => void,
+    activePopoverId: number | null
 ): void => {
-  e.preventDefault();
-  e.stopPropagation();
-  setActivePopoverId(activePopoverId === audioId ? null : audioId);
+    e.preventDefault();
+    e.stopPropagation();
+    setActivePopoverId(activePopoverId === audioId ? null : audioId);
 }
 
 export const handleClosePopover = (
-  setActivePopoverId: (value: number | null) => void
+    setActivePopoverId: (value: number | null) => void
 ): void => {
-  setActivePopoverId(null);
+    setActivePopoverId(null);
 }
