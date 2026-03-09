@@ -51,7 +51,7 @@ const AudioPlayer = () => {
       html5: true,
       preload: 'metadata',
       loop: loop,
-      volume: parseFloat(volumeRef.current.value),
+      volume: volumeRef.current?.value ? parseFloat(volumeRef.current.value) : volumeRef.current?.defaultValue ? parseFloat(volumeRef.current.defaultValue) : 1,
       onload: () => {
         if (soundRef.current) {
           setDuration(soundRef.current.duration())
