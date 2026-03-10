@@ -101,7 +101,18 @@ const serwist = new Serwist({
 
     // 6. Default cache for everything else
     ...defaultCache,
-  ]
+  ], fallbacks: {
+    entries: [
+      {
+        // This tells Serwist to serve /playlist when a navigation fails
+        url: "/playlist",
+        matcher({ request }) {
+          // Only apply this to document requests (page navigations)
+          return request.destination === "document";
+        },
+      },
+    ],
+  },
 });
 
 serwist.addEventListeners();
