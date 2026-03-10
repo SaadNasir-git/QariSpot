@@ -85,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className='dark md:p-2 h-full bg-black'>
       <body className={`${poppins.className} h-full w-full flex flex-col bg-black`} suppressHydrationWarning>
-        <SerwistProvider swUrl="/serwist/sw.js">
+        <SerwistProvider swUrl="/sw.js">
           <LibraryProvider>
             <AudioIdProvider>
               <Toaster position="top-right" />
