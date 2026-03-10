@@ -40,9 +40,9 @@ const HomePage = ({ fetchedQaris }: { fetchedQaris: Promise<qari[]> }) => {
                                 Connect to the internet to browse new content
                             </p>
 
-                            <button className="md:hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors duration-200">
+                            <Link href={'/playlist'} className="md:hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors duration-200">
                                 Go to Playlist →
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
