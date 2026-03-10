@@ -199,7 +199,7 @@ const AudioPlayer = () => {
                 </button>
 
                 {/*Volume control and repeat buttons*/}
-                <div className="flex gap-3 h-10 w-full justify-end items-center">
+                <div className="flex gap-3 h-10 w-full justify-end items-center pr-1">
                   <button
                     className={`${loop ? 'opacity-100 bg-[#1A1A1A]' : 'opacity-50'} hover:opacity-70 hover:bg-[#1A1A1A] transition-all duration-300 rounded-full w-8 flex justify-center items-center h-8`}
                     onClick={toggleLoop}
