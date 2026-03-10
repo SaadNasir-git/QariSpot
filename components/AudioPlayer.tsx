@@ -96,7 +96,7 @@ const AudioPlayer = () => {
     if (duration === 0 && soundRef.current) {
       setDuration(soundRef.current.duration())
     }
-  }, [])
+  }, [loop, volumeRef, soundRef, progressBarInputRef, currentTimeRef, progressInterval])
 
   const initialFunction = useCallback(async () => {
     if (audioId && typeof audioId === 'string') {
@@ -106,7 +106,7 @@ const AudioPlayer = () => {
     } else if (audioId && typeof audioId === 'number') {
       const PlaybackUrl = getPlaybackUrl(audioId)
       if (!PlaybackUrl) return
-      
+
       setaudioData(getRecordById(audioId))
       PlayAudio(PlaybackUrl)
     } else if (listenParam) {
@@ -156,7 +156,7 @@ const AudioPlayer = () => {
         <div>
           <div className="w-full flex justify-center items-center h-full">
             {/* Text Content */}
-            <div className="md:flex hidden gap-1 flex-col">
+            <div className="md:flex hidden gap-1 flex-col w-80 overflow-clip">
               {/*Info of audio*/}
               <div className="items-center gap-2 w-min flex">
                 <h4 className="text-sm font-medium text-white">
