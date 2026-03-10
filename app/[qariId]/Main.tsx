@@ -7,18 +7,19 @@ import { Amiri } from 'next/font/google';
 import { use, useState, useEffect, useRef, useCallback } from 'react';
 const amiri700 = Amiri({ weight: '700' })
 import { CldImage } from 'next-cloudinary';
-import { Search, X, ArrowBigDownDash } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
 const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Promise<surah[]> }) => {
+  // const [surahData, setSurahData] = useState(use(surah));
+  // const [offset, setOffset] = useState<number>(10)
   const qari = use(qariData)
-  const [surahData, setSurahData] = useState(use(surah));
+  const surahData = use(surah)
   const [filteredSurahs, setFilteredSurahs] = useState(use(surah));
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const searchInputRef = useRef(null);
-  const [offset, setOffset] = useState<number>(10)
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const listenParam = searchParams.get('listen')
 
@@ -68,34 +69,39 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
   }, [isSearching]);
 
   const toggleSearch = useCallback(() => {
-    setIsSearching(!isSearching);
-    if (isSearching) {
-      setSearchQuery('');
-    }
-  }, [isSearching])
+    searchInputRef.current.blur()
+    setIsSearching(prev => {
+      if (prev) setSearchQuery('');
+      return !prev;
+    });
+    searchInputRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
-    searchInputRef.current?.focus();
+    searchInputRef.current?.focus({ preventScroll: true });
   }, [searchInputRef])
 
-  const loadMore = useCallback(async () => {
-    if (qari?.id) {
-      const res = await axios.post('/api/surah', { qariId: qari.id, offset })
-      setSurahData([...surahData, res.data.surah])
-      setOffset(offset + 10)
-    }
-  }, [offset])
+  // const loadMore = useCallback(async () => {
+  //   if (qari?.id) {
+  //     const res = await axios.post('/api/surah', { qariId: qari.id, offset })
+  //     setSurahData([...surahData, res.data.surah])
+  //     setOffset(offset + 10)
+  //   }
+  // }, [offset])
 
   return (
     <div className="relative w-full">
       {/* Fixed image container for mobile/tablet */}
       <div className="sticky top-0 z-50 w-full bg-gradient-to-b from-[#0A0A0A] to-transparent backdrop-blur-md h-0">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-4 h-0">
+          <div className="flex items-center justify-between gap-2 h-0">
             {/* Search Input */}
             <div className='w-0 h-0'></div>
-            <div className={`relative flex-1 max-w-md transition-all duration-300 ${!isSearching ? '-translate-y-16' : 'translate-y-0'}`}>
+            <div
+              className={`relative flex-1 max-w-md transition-all duration-300 ${!isSearching ? '-translate-y-16 opacity-0 pointer-events-none' : 'translate-y-8 opacity-100'
+                }`}
+            >
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
               <input
                 ref={searchInputRef}
@@ -119,13 +125,14 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
             {/* Search Toggle Button */}
             <button
               onClick={toggleSearch}
+              type='button'
               className={`
-              p-3 rounded-xl transition-all duration-200
-              ${isSearching
+                p-3 rounded-xl transition-all duration-200 translate-y-8
+                ${isSearching
                   ? 'bg-green-500/20 text-green-500 border border-green-500/30'
                   : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
                 }
-        `}
+              `}
             >
               {isSearching ? <X size={20} /> : <Search size={20} />}
             </button>
@@ -209,33 +216,35 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
           )}
         </div>
       </div>
-      {/*
-      <div className='w-full z-50 py-5 flex justify-center items-center pointer-events-none'>
-        <button
-          onClick={loadMore}
-          className="group relative pointer-events-auto bg-gradient-to-r from-green-600 to-green-500 
-               hover:from-green-500 hover:to-green-400 text-white 
-               px-4 py-3 rounded-full shadow-2xl shadow-green-500/20
-               flex items-center gap-3 transition-all duration-300 
-               hover:scale-105 active:scale-95 border border-white/10
-               backdrop-blur-sm"
-        >
-          <div className="relative">
-            <ArrowBigDownDash
-              size={22}
-              className="animate-bounce group-hover:animate-none transition-transform translate-y-0.5"
-            />
-            <div className="absolute inset-0 animate-ping bg-white/20 rounded-full opacity-0 group-hover:opacity-100" />
-          </div>
-
-          <span className="font-medium text-sm">Load More Surahs</span>
-
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity -z-10" />
-        </button>
-      </div>
-      */}
+      {/*Load more button*/}
     </div>
   )
 }
 
 export default MainQariPage
+
+{/*
+  <div className='w-full z-50 py-5 flex justify-center items-center pointer-events-none'>
+    <button
+      onClick={loadMore}
+      className="group relative pointer-events-auto bg-gradient-to-r from-green-600 to-green-500 
+           hover:from-green-500 hover:to-green-400 text-white 
+           px-4 py-3 rounded-full shadow-2xl shadow-green-500/20
+           flex items-center gap-3 transition-all duration-300 
+           hover:scale-105 active:scale-95 border border-white/10
+           backdrop-blur-sm"
+    >
+      <div className="relative">
+        <ArrowBigDownDash
+          size={22}
+          className="animate-bounce group-hover:animate-none transition-transform translate-y-0.5"
+        />
+        <div className="absolute inset-0 animate-ping bg-white/20 rounded-full opacity-0 group-hover:opacity-100" />
+      </div>
+
+      <span className="font-medium text-sm">Load More Surahs</span>
+
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity -z-10" />
+    </button>
+  </div>
+  */}
