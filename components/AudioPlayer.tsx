@@ -191,20 +191,34 @@ const AudioPlayer = () => {
         title: `Surah ${audioData.current?.name}` || 'Unknown Surah',
         artist: audioData.current?.qariName || 'Unknown Qari',
         album: 'QariSpot',
-        artwork: [{ src: '/quran.png', sizes: '512x512', type: 'image/png' }]
+        artwork: [
+          { src: '/quran.png', sizes: '512x512', type: 'image/png' },
+        ]
       });
 
-      navigator.mediaSession.setActionHandler('play', () => soundRef.current?.play());
-      navigator.mediaSession.setActionHandler('pause', () => soundRef.current?.pause());
-      navigator.mediaSession.setActionHandler('stop', () => soundRef.current?.stop());
-      navigator.mediaSession.setActionHandler('seekto', (details) => {
+      // Helper to safely set handlers
+      const setAction = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch (e) {
+          // Browser might not support this action
+          console.warn(`MediaSession action ${action} not supported.`);
+        }
+      }
+
+      setAction('play', () => soundRef.current?.play());
+      setAction('pause', () => soundRef.current?.pause());
+      setAction('stop', () => soundRef.current?.stop());
+      
+      setAction('seekto', (details) => {
         if (soundRef.current && details.seekTime !== undefined) {
           soundRef.current.seek(details.seekTime);
           updateProgress();
         }
       });
-      navigator.mediaSession.setActionHandler('previoustrack', handlePreviousClick);
-      navigator.mediaSession.setActionHandler('nexttrack', handleNextClick);
+
+      setAction('previoustrack', audioData.previous_surah ? handlePreviousClick : null);
+      setAction('nexttrack', audioData.next_surah ? handleNextClick : null);
     }
   }, [audioData, handlePreviousClick, handleNextClick, updateProgress]);
 
