@@ -168,42 +168,46 @@ const AudioPlayer = () => {
     }
   }, [])
 
-  const handlePreviousClick = useCallback(() => {
-    if (!audioData?.previous_surah) return
-    // Just set the ID. The useEffect above will handle fetching data and playing.
-    if (typeof audioId === 'number') setAudio(audioData.previous_surah.id)
-    else if (typeof audioId === 'string') setAudio(audioData.previous_surah.url)
-  }, [audioData, audioId, setAudio])
-
-  const handleNextClick = useCallback(() => {
-    if (!audioData?.next_surah) return
-    // Just set the ID. The useEffect above will handle fetching data and playing.
-    if (typeof audioId === 'number') setAudio(audioData.next_surah.id)
-    else if (typeof audioId === 'string') setAudio(audioData.next_surah.url)
-  }, [audioData, audioId, setAudio])
-
-  // Media Session API
-  useEffect(() => {
-    if (!audioData || typeof navigator === 'undefined') return;
-
-    if ('mediaSession' in navigator) {
+  const updateMediaSession = useCallback((track: any) => {
+    if (typeof navigator !== 'undefined' && 'mediaSession' in navigator && track) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: `Surah ${audioData.current?.name}` || 'Unknown Surah',
-        artist: audioData.current?.qariName || 'Unknown Qari',
+        title: `Surah ${track.name}` || 'Unknown Surah',
+        artist: track.qariName || 'Unknown Qari',
         album: 'QariSpot',
         artwork: [
           { src: '/quran.png', sizes: '512x512', type: 'image/png' },
         ]
       });
+    }
+  }, [])
+  
+  const handlePreviousClick = useCallback(() => {
+    if (!audioData?.previous_surah) return
+    updateMediaSession(audioData.previous_surah);
 
-      // Helper to safely set handlers
+    if (typeof audioId === 'number') setAudio(audioData.previous_surah.id)
+    else if (typeof audioId === 'string') setAudio(audioData.previous_surah.url)
+    
+  }, [audioData, audioId, setAudio, updateMediaSession])
+
+  const handleNextClick = useCallback(() => {
+    if (!audioData?.next_surah) return
+    updateMediaSession(audioData.next_surah);
+
+    if (typeof audioId === 'number') setAudio(audioData.next_surah.id)
+    else if (typeof audioId === 'string') setAudio(audioData.next_surah.url)
+    
+  }, [audioData, audioId, setAudio, updateMediaSession])
+
+  useEffect(() => {
+    if (!audioData || typeof navigator === 'undefined') return;
+
+    if ('mediaSession' in navigator) {
+      updateMediaSession(audioData.current);
       const setAction = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
         try {
           navigator.mediaSession.setActionHandler(action, handler);
-        } catch (e) {
-          // Browser might not support this action
-          console.warn(`MediaSession action ${action} not supported.`);
-        }
+        } catch (e) { /* Browser might not support this action */ }
       }
 
       setAction('play', () => soundRef.current?.play());
@@ -220,8 +224,8 @@ const AudioPlayer = () => {
       setAction('previoustrack', audioData.previous_surah ? handlePreviousClick : null);
       setAction('nexttrack', audioData.next_surah ? handleNextClick : null);
     }
-  }, [audioData, handlePreviousClick, handleNextClick, updateProgress]);
-
+  }, [audioData, handlePreviousClick, handleNextClick, updateProgress, updateMediaSession]);
+  
   return (
     <div className={`${soundRef.current ? 'h-28' : 'h-0'} md:px-4 transition-all dark ease-in-out`}>
       {soundRef.current && (
