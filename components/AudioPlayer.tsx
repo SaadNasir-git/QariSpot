@@ -17,8 +17,12 @@ const formatTime = (time: number) => {
 
 const AudioPlayer = () => {
   const soundRef = useRef<Howl | null>(null)
-  const loopRef = useRef<boolean>(false); // Use ref for loop to avoid stale closures in PlayAudio
+  const loopRef = useRef<boolean>(false);
   const progressInterval = useRef<NodeJS.Timeout | null>(null)
+  
+  // FIX 1: Refs to hold the LATEST state for the Howler callbacks
+  const audioDataRef = useRef<SurahAudioData | AudioWithNeighbors>(null);
+  const audioIdRef = useRef<string | number | null>(null);
 
   // DOM Refs
   const progressBarInputRef = useRef<HTMLInputElement>(null)
@@ -34,6 +38,15 @@ const AudioPlayer = () => {
   const [loop, setLoop] = useState<boolean>(false);
   const [isPlaying, setisPlaying] = useState<boolean>(false)
   const [duration, setDuration] = useState<number>(0)
+
+  // FIX 2: Keep refs updated whenever state changes
+  useEffect(() => {
+    audioDataRef.current = audioData;
+  }, [audioData]);
+
+  useEffect(() => {
+    audioIdRef.current = audioId;
+  }, [audioId]);
 
   const updateProgress = useCallback(() => {
     if (soundRef.current) {
@@ -85,21 +98,39 @@ const AudioPlayer = () => {
         setisPlaying(false)
         updateProgress()
         if (progressInterval.current) clearInterval(progressInterval.current)
-        // Optional: Auto-next logic could go here if needed
+        
+        // FIX 3: Auto-next logic using REFS to get fresh data
+        if (!loopRef.current) {
+          // Access current data via ref
+          const currentData = audioDataRef.current;
+          const currentId = audioIdRef.current;
+
+          if (currentData?.next_surah) {
+            console.log('Auto-playing next track...');
+            
+            // Determine ID type and set audio
+            if (typeof currentId === 'number') {
+              setAudio(currentData.next_surah.id);
+            } else if (typeof currentId === 'string') {
+              setAudio(currentData.next_surah.url);
+            }
+          } else {
+            console.log('No next track available.');
+          }
+        }
       },
       onstop: () => {
         setisPlaying(false)
         if (progressInterval.current) clearInterval(progressInterval.current)
       }
     })
-  }, [])
+  }, [updateProgress, setAudio]) // Dependencies are stable now
 
   useEffect(() => {
     const fetchAndPlay = async () => {
       if (audioId && typeof audioId === 'string') {
         PlayAudio(`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/video/upload/v1/${audioId}.mp3`)
 
-        // Fetch metadata
         try {
           const res = await axios.post('/api/surahdata', { url: audioId })
           setaudioData(res.data.data);
@@ -120,7 +151,12 @@ const AudioPlayer = () => {
     }
 
     fetchAndPlay()
-  }, [listenParam, audioId, PlayAudio])
+    
+    return () => {
+      if (soundRef.current) soundRef.current.unload();
+      if (progressInterval.current) clearInterval(progressInterval.current);
+    };
+  }, [listenParam, audioId, PlayAudio, getPlaybackUrl, getRecordById, setAudio])
 
   const toggleLoop = useCallback(() => {
     const newLoopState = !loop
@@ -163,72 +199,55 @@ const AudioPlayer = () => {
         album: 'QariSpot',
         artwork: [
           { src: '/quran.png', sizes: '512x512', type: 'image/png' }
-          // { src: '/api/media-image?size=96', sizes: '96x96', type: 'image/png' },
-          // { src: '/api/media-image?size=128', sizes: '128x128', type: 'image/png' },
-          // { src: '/api/media-image?size=192', sizes: '192x192', type: 'image/png' },
-          // { src: '/api/media-image?size=256', sizes: '256x256', type: 'image/png' },
-          // { src: '/api/media-image?size=384', sizes: '384x384', type: 'image/png' },
-          // { src: '/api/media-image?size=512', sizes: '512x512', type: 'image/png' },
         ]
       });
     }
   }, [])
 
+  // Helper to safely set media session actions
+  const setMediaAction = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
+    if ('mediaSession' in navigator) {
+        try { navigator.mediaSession.setActionHandler(action, handler); } catch (e) {}
+    }
+  }
+
   const handlePreviousClick = useCallback(() => {
     if (!audioData?.previous_surah) return
     updateMediaSession(audioData.previous_surah);
 
-    setaudioData({
-      current: audioData.previous_surah,
-      next_surah: audioData.current,
-      previous_surah: null
-    })
-
+    // Note: We don't need to manually setaudioData state here, 
+    // the useEffect [audioId] will fetch and set it.
+    
     if (typeof audioId === 'number') setAudio(audioData.previous_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.previous_surah.url)
 
-  }, [audioData, audioId, updateMediaSession])
+  }, [audioData, audioId, updateMediaSession, setAudio])
 
   const handleNextClick = useCallback(() => {
     if (!audioData?.next_surah) return
     updateMediaSession(audioData.next_surah);
 
-    setaudioData({
-      current: audioData.next_surah,
-      previous_surah: audioData.current,
-      next_surah: null
-    })
-
     if (typeof audioId === 'number') setAudio(audioData.next_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.next_surah.url)
 
-  }, [audioData, audioId, updateMediaSession])
+  }, [audioData, audioId, updateMediaSession, setAudio])
 
   useEffect(() => {
     if (!audioData || typeof navigator === 'undefined') return;
-
-    if ('mediaSession' in navigator) {
-      updateMediaSession(audioData.current);
-      const setAction = (action: MediaSessionAction, handler: MediaSessionActionHandler | null) => {
-        try {
-          navigator.mediaSession.setActionHandler(action, handler);
-        } catch (e) { /* Browser might not support this action */ }
-      }
-
-      setAction('play', () => soundRef.current?.play());
-      setAction('pause', () => soundRef.current?.pause());
-      setAction('stop', () => soundRef.current?.stop());
-
-      setAction('seekto', (details) => {
+    updateMediaSession(audioData.current);
+    
+    setMediaAction('play', () => soundRef.current?.play());
+    setMediaAction('pause', () => soundRef.current?.pause());
+    setMediaAction('stop', () => soundRef.current?.stop());
+    setMediaAction('seekto', (details) => {
         if (soundRef.current && details.seekTime !== undefined) {
-          soundRef.current.seek(details.seekTime);
-          updateProgress();
+            soundRef.current.seek(details.seekTime);
+            updateProgress();
         }
-      });
-
-      setAction('previoustrack', audioData.previous_surah ? handlePreviousClick : null);
-      setAction('nexttrack', audioData.next_surah ? handleNextClick : null);
-    }
+    });
+    setMediaAction('previoustrack', audioData.previous_surah ? handlePreviousClick : null);
+    setMediaAction('nexttrack', audioData.next_surah ? handleNextClick : null);
+    
   }, [audioData, handlePreviousClick, handleNextClick, updateProgress, updateMediaSession]);
 
   return (
@@ -312,15 +331,12 @@ const AudioPlayer = () => {
                 </div>
               </div>
 
-              {/* Progress Bar - Fixed Layout */}
+              {/* Progress Bar */}
               <div className="flex items-center gap-2 w-full py-2">
                 <span className="text-xs text-white/40 w-10 text-right pr-0.5" ref={currentTimeRef}>0:00</span>
 
                 <div className="flex-1 relative h-4 flex items-center group">
-                  {/* Background Track */}
                   <div className="absolute w-full h-1 bg-white/10 rounded-full pointer-events-none" />
-
-                  {/* Active Progress Fill */}
                   <div
                     className="absolute h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full pointer-events-none flex items-center justify-end transition-all duration-200"
                     ref={progressBarRef}
@@ -328,14 +344,12 @@ const AudioPlayer = () => {
                   >
                     <div className="relative w-full h-full flex justify-end items-center">
                       <div
-                        className="w-4 h-4 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] 
-      border-2 border-white transition-all duration-200 hover:scale-110 absolute"
+                        className="w-4 h-4 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] border-2 border-white transition-all duration-200 hover:scale-110 absolute"
                         style={{ right: '-8px' }}
                       />
                     </div>
                   </div>
 
-                  {/* The Input (Invisible but clickable) */}
                   <input
                     ref={progressBarInputRef}
                     type="range"
@@ -344,9 +358,6 @@ const AudioPlayer = () => {
                     step={0.1}
                     onChange={handleSeek}
                     className="absolute w-full h-full opacity-0 cursor-pointer z-10"
-                    style={{
-                      zIndex: 10
-                    }}
                   />
                 </div>
 
