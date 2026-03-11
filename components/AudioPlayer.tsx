@@ -162,12 +162,13 @@ const AudioPlayer = () => {
         artist: track.qariName || 'Unknown Qari',
         album: 'QariSpot',
         artwork: [
-          { src: '/api/media-image?size=96', sizes: '96x96', type: 'image/png' },
-          { src: '/api/media-image?size=128', sizes: '128x128', type: 'image/png' },
-          { src: '/api/media-image?size=192', sizes: '192x192', type: 'image/png' },
-          { src: '/api/media-image?size=256', sizes: '256x256', type: 'image/png' },
-          { src: '/api/media-image?size=384', sizes: '384x384', type: 'image/png' },
-          { src: '/api/media-image?size=512', sizes: '512x512', type: 'image/png' },
+          {src: '/quran.png', sizes:'512x512', type:'image/png'}
+          // { src: '/api/media-image?size=96', sizes: '96x96', type: 'image/png' },
+          // { src: '/api/media-image?size=128', sizes: '128x128', type: 'image/png' },
+          // { src: '/api/media-image?size=192', sizes: '192x192', type: 'image/png' },
+          // { src: '/api/media-image?size=256', sizes: '256x256', type: 'image/png' },
+          // { src: '/api/media-image?size=384', sizes: '384x384', type: 'image/png' },
+          // { src: '/api/media-image?size=512', sizes: '512x512', type: 'image/png' },
         ]
       });
     }
