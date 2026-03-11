@@ -23,7 +23,6 @@ const AudioPlayer = () => {
   // DOM Refs
   const progressBarInputRef = useRef<HTMLInputElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
-  const thumbRef = useRef<HTMLDivElement>(null)
   const currentTimeRef = useRef<HTMLDivElement>(null)
   const volumeRef = useRef<HTMLInputElement>(null)
 
@@ -44,9 +43,6 @@ const AudioPlayer = () => {
       }
       if (progressBarRef.current) {
         progressBarRef.current.style.width = `${(soundRef.current.seek() / soundRef.current.duration()) * 100}%`
-      }
-      if (thumbRef.current) {
-        thumbRef.current.style.left = `${(soundRef.current.seek() / soundRef.current.duration()) * 100}%`
       }
       if (currentTimeRef.current) {
         currentTimeRef.current.innerText = formatTime(currentTime)
@@ -87,6 +83,7 @@ const AudioPlayer = () => {
       },
       onend: () => {
         setisPlaying(false)
+        updateProgress()
         if (progressInterval.current) clearInterval(progressInterval.current)
         // Optional: Auto-next logic could go here if needed
       },
@@ -95,7 +92,7 @@ const AudioPlayer = () => {
         if (progressInterval.current) clearInterval(progressInterval.current)
       }
     })
-  }, [updateProgress])
+  }, [])
 
   useEffect(() => {
     const fetchAndPlay = async () => {
@@ -123,17 +120,7 @@ const AudioPlayer = () => {
     }
 
     fetchAndPlay()
-
-    // CLEANUP: Unload sound on unmount
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.unload();
-      }
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
-    }
-  }, [listenParam, audioId, PlayAudio, getPlaybackUrl, getRecordById, setAudio])
+  }, [listenParam, audioId, PlayAudio])
 
   const toggleLoop = useCallback(() => {
     const newLoopState = !loop
@@ -180,15 +167,15 @@ const AudioPlayer = () => {
       });
     }
   }, [])
-  
+
   const handlePreviousClick = useCallback(() => {
     if (!audioData?.previous_surah) return
     updateMediaSession(audioData.previous_surah);
 
     if (typeof audioId === 'number') setAudio(audioData.previous_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.previous_surah.url)
-    
-  }, [audioData, audioId, setAudio, updateMediaSession])
+
+  }, [audioData, audioId, updateMediaSession])
 
   const handleNextClick = useCallback(() => {
     if (!audioData?.next_surah) return
@@ -196,8 +183,8 @@ const AudioPlayer = () => {
 
     if (typeof audioId === 'number') setAudio(audioData.next_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.next_surah.url)
-    
-  }, [audioData, audioId, setAudio, updateMediaSession])
+
+  }, [audioData, audioId, updateMediaSession])
 
   useEffect(() => {
     if (!audioData || typeof navigator === 'undefined') return;
@@ -213,7 +200,7 @@ const AudioPlayer = () => {
       setAction('play', () => soundRef.current?.play());
       setAction('pause', () => soundRef.current?.pause());
       setAction('stop', () => soundRef.current?.stop());
-      
+
       setAction('seekto', (details) => {
         if (soundRef.current && details.seekTime !== undefined) {
           soundRef.current.seek(details.seekTime);
@@ -225,21 +212,20 @@ const AudioPlayer = () => {
       setAction('nexttrack', audioData.next_surah ? handleNextClick : null);
     }
   }, [audioData, handlePreviousClick, handleNextClick, updateProgress, updateMediaSession]);
-  
+
   return (
-    <div className={`${soundRef.current ? 'h-28' : 'h-0'} md:px-4 transition-all dark ease-in-out`}>
+    <div className={`${soundRef.current ? 'h-44' : 'h-0'} md:px-4 transition-all dark ease-in-out duration-300 overflow-hidden`}>
       {soundRef.current && (
         <div className="h-full">
           <div className="w-full flex justify-center items-center h-full">
 
-            {/* Text Content - Added Safe Navigation */}
-            <div className="md:flex hidden gap-1 flex-col w-80 overflow-clip">
-              <div className="items-center gap-2 w-min flex">
-                <h4 className="text-sm font-medium text-white">
-                  <span dir="rtl" className="inline-block align-middle truncate">{audioData?.current?.name}</span>
+            <div className="md:flex hidden gap-1 flex-col w-64 xl:w-80 overflow-hidden">
+              <div className="items-center gap-2 w-full flex">
+                <h4 className="text-sm font-medium text-white truncate">
+                  <span dir="rtl" className="inline-block align-middle">{audioData?.current?.name}</span>
                 </h4>
-                <span className="text-white/30">•</span>
-                <span className="text-sm text-white/70 truncate">{audioData?.current?.qariName}</span>
+                <span className="text-white/30 shrink-0">•</span>
+                <span className="text-sm text-white/70 truncate shrink">{audioData?.current?.qariName}</span>
               </div>
               <div>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${audioId && typeof (audioId) === 'number'
@@ -310,7 +296,7 @@ const AudioPlayer = () => {
 
               {/* Progress Bar - Fixed Layout */}
               <div className="flex items-center gap-2 w-full py-2">
-                <span className="text-xs text-white/40 w-10 text-right" ref={currentTimeRef}>0:00</span>
+                <span className="text-xs text-white/40 w-10 text-right pr-0.5" ref={currentTimeRef}>0:00</span>
 
                 <div className="flex-1 relative h-4 flex items-center group">
                   {/* Background Track */}
@@ -318,9 +304,18 @@ const AudioPlayer = () => {
 
                   {/* Active Progress Fill */}
                   <div
-                    className="absolute h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full pointer-events-none"
+                    className="absolute h-1 bg-gradient-to-r from-green-500 to-green-400 rounded-full pointer-events-none flex items-center justify-end transition-all duration-200"
                     ref={progressBarRef}
-                  />
+                    style={{ width: `${(soundRef.current?.seek() / soundRef.current?.duration()) * 100 || 0}%` }}
+                  >
+                    <div className="relative w-full h-full flex justify-end items-center">
+                      <div
+                        className="w-4 h-4 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] 
+      border-2 border-white transition-all duration-200 hover:scale-110 absolute"
+                        style={{ right: '-8px' }}
+                      />
+                    </div>
+                  </div>
 
                   {/* The Input (Invisible but clickable) */}
                   <input
@@ -335,17 +330,6 @@ const AudioPlayer = () => {
                       zIndex: 10
                     }}
                   />
-                    <div
-                      className="absolute w-4 h-4 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)] 
-                   border-2 border-white opacity-100 transition-all 
-                   duration-200 pointer-events-none z-20 hover:scale-110"
-                      ref={thumbRef}
-                      style={{
-                        transform: 'translateX(-50%)',
-                        top: '50%',
-                        marginTop: '-8px'
-                      }}
-                    />
                 </div>
 
                 <span className="text-xs text-white/40 w-10">{formatTime(duration)}</span>
