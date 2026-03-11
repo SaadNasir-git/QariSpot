@@ -1,11 +1,11 @@
 {
-  "name": "player",
+  "name": "qari-spot",
   "version": "0.1.0",
   "type": "module",
   "private": true,
   "scripts": {
     "dev": "concurrently -p none 'serwist build --watch' 'next dev'",
-    "dev:once": "cross-env NODE_ENV=development serwist build && next dev",
+    "dev:once": "serwist build && next dev",
     "build": "next build && serwist build",
     "start": "next start",
     "lint": "eslint"

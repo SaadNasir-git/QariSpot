@@ -3,14 +3,20 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { sileo } from 'sileo';
 import Dexie from 'dexie';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useLiveQuery } from 'dexie-react-hooks'; 
 
 interface StoredAudio extends surah {
   blob: Blob;
   qariName: string;
   dateAdded: string;
   size: number;
-  duration?: number;
+  durationSeconds: number;
+}
+
+export interface AudioWithNeighbors {
+  current: StoredAudio;
+  previous_surah: StoredAudio | null;
+  next_surah: StoredAudio | null;
 }
 
 // Create a proper Dexie database class
@@ -47,7 +53,7 @@ interface LibraryContextType {
   removeFromLibrary: (e: React.MouseEvent<HTMLButtonElement>, audioId: number) => Promise<void>;
   getPlaybackUrl: (audioId: number) => string | null;
   isInLibrary: (audioId: number) => boolean;
-  getRecordById: (audioId: number) => StoredAudio | undefined;
+  getRecordById: (audioId: number) => AudioWithNeighbors | undefined;
   totalSize: string;
 }
 
@@ -117,7 +123,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         blob,
         dateAdded: new Date().toISOString(),
         size: blob.size,
-        duration
+        durationSeconds: duration
       };
 
       // Dexie handles the transaction automatically
@@ -178,8 +184,25 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
     library.reduce((acc, item) => acc + item.size, 0)
   );
 
-  const getRecordById = useCallback((audioId: number): StoredAudio | undefined => {
-    return library.find(item => item.id === audioId);
+  const getRecordById = useCallback((audioId: number): AudioWithNeighbors | undefined => {
+    const currentAudio = library.find(item => item.id === audioId);
+    
+    if (!currentAudio) {
+      return undefined; // Changed from null to undefined to match return type
+    }
+
+    // Get all surahs from the same qari, sorted by surah number
+    const qariSurahs = library
+      .filter(item => item.qariId === currentAudio.qariId)
+      .sort((a, b) => a.surahNo - b.surahNo);
+
+    const currentIndex = qariSurahs.findIndex(item => item.id === audioId);
+
+    return {
+      current: currentAudio,
+      previous_surah: currentIndex > 0 ? qariSurahs[currentIndex - 1] : null,
+      next_surah: currentIndex < qariSurahs.length - 1 ? qariSurahs[currentIndex + 1] : null
+    };
   }, [library]);
 
   // Cleanup URLs on unmount

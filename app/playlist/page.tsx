@@ -103,12 +103,12 @@ const PlaylistPage = () => {
                                                     <Music size={10} />
                                                     Surah
                                                 </span>
-                                                {item.duration && (
+                                                {item.durationSeconds && (
                                                     <>
                                                         <span className="w-1 h-1 rounded-full bg-white/20" />
                                                         <span className="flex items-center gap-1">
                                                             <Clock size={10} />
-                                                            {formatDuration(item.duration)}
+                                                            {formatDuration(item.durationSeconds)}
                                                         </span>
                                                     </>
                                                 )}
@@ -177,7 +177,7 @@ const PlaylistPage = () => {
                             <div className="flex items-center gap-1.5 text-[10px] text-white/30">
                                 <Clock size={12} />
                                 <span>
-                                    {formatDuration(library.reduce((acc, item) => acc + (item.duration || 0), 0))} total
+                                    {formatDuration(library.reduce((acc, item) => acc + (item.durationSeconds || 0), 0))} total
                                 </span>
                             </div>
                         </div>

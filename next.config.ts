@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    experimental:{
-        proxyClientMaxBodySize: '100mb',
-    },
     async headers() {
         return [
             {
@@ -42,7 +39,7 @@ const nextConfig: NextConfig = {
                 ],
             },
         ];
-    },
+    }
 };
 
 export default nextConfig;

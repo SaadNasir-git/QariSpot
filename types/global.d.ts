@@ -14,3 +14,9 @@ declare interface surah {
     fileSizeMb?: number;
     createdAt?: number;
 }
+
+declare interface SurahAudioData {
+  current: surah & { qariName: string }
+  previous_surah?: surah & { qariName: string } | null;
+  next_surah?: surah & { qariName: string } | null;
+}

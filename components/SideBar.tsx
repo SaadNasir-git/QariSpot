@@ -153,12 +153,12 @@ const SideBar = () => {
                     {/* Metadata */}
                     <div className="flex items-center gap-1.5 mt-1">
                       <span className="text-[10px] text-white/30">Surah</span>
-                      {item.duration && (
+                      {item.durationSeconds && (
                         <>
                           <span className="text-[10px] text-white/20">•</span>
                           <span className="text-[10px] text-white/30">
-                            {Math.floor(item.duration / 60)}:
-                            {Math.floor(item.duration % 60).toString().padStart(2, '0')}
+                            {Math.floor(item.durationSeconds / 60)}:
+                            {Math.floor(item.durationSeconds % 60).toString().padStart(2, '0')}
                           </span>
                         </>
                       )}
