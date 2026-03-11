@@ -162,7 +162,7 @@ const AudioPlayer = () => {
         artist: track.qariName || 'Unknown Qari',
         album: 'QariSpot',
         artwork: [
-          {src: '/quran.png', sizes:'512x512', type:'image/png'}
+          { src: '/quran.png', sizes: '512x512', type: 'image/png' }
           // { src: '/api/media-image?size=96', sizes: '96x96', type: 'image/png' },
           // { src: '/api/media-image?size=128', sizes: '128x128', type: 'image/png' },
           // { src: '/api/media-image?size=192', sizes: '192x192', type: 'image/png' },
@@ -178,6 +178,12 @@ const AudioPlayer = () => {
     if (!audioData?.previous_surah) return
     updateMediaSession(audioData.previous_surah);
 
+    setaudioData({
+      current: audioData.previous_surah,
+      next_surah: audioData.current,
+      previous_surah: null
+    })
+
     if (typeof audioId === 'number') setAudio(audioData.previous_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.previous_surah.url)
 
@@ -186,6 +192,12 @@ const AudioPlayer = () => {
   const handleNextClick = useCallback(() => {
     if (!audioData?.next_surah) return
     updateMediaSession(audioData.next_surah);
+
+    setaudioData({
+      current: audioData.next_surah,
+      previous_surah: audioData.current,
+      next_surah: null
+    })
 
     if (typeof audioId === 'number') setAudio(audioData.next_surah.id)
     else if (typeof audioId === 'string') setAudio(audioData.next_surah.url)
