@@ -85,7 +85,7 @@ const PlaylistPage = () => {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-start justify-between gap-2">
                                         <div className="min-w-0 flex-1">
-                                            <div className="flex flex-col items-center gap-2 mb-1">
+                                            <div className="flex flex-col gap-2 mb-1">
                                                 <h3 className="text-sm font-medium text-white/90 truncate">
                                                     {item.name}
                                                 </h3>
