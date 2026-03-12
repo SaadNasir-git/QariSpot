@@ -275,7 +275,7 @@ const AudioPlayer = () => {
               </div>
             </div>
 
-            <div className="w-full flex flex-col md:px-2 px-2 pt-4 pb-2">
+            <div className="w-full flex flex-col p-2">
 
               {/* Action Buttons */}
               <div className="flex justify-between items-center">
