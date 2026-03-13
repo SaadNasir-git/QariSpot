@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
+    "music-metadata": "^11.12.1",
     "axios": "^1.13.5",
     "browser-image-compression": "^2.0.2",
     "cloudinary": "^2.9.0",
