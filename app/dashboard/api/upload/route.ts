@@ -1,4 +1,4 @@
-export const maxDuration = 500;
+export const maxDuration = 300;
 
 import { NextRequest, NextResponse } from 'next/server';
 import getDatabaseConnection from "@/lib/mysql2";
@@ -7,11 +7,11 @@ import { parseBuffer } from "music-metadata";
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from 'stream';
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegPath from '@ffmpeg-installer/ffmpeg';
+import ffmpegPath from 'ffmpeg-static';
 import { tryCatchBlock } from '@/lib/trycatchBlock';
 
 // Tell fluent-ffmpeg where to find the binary (Crucial for Vercel)
-ffmpeg.setFfmpegPath(ffmpegPath.path);
+ffmpeg.setFfmpegPath(ffmpegPath as string);
 
 // Cloudinary Config
 cloudinary.config({
