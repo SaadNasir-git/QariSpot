@@ -29,7 +29,13 @@ const Page = () => {
 
         // Process files sequentially (1 by 1) to ensure stability
         // You can increase concurrency if your server handles it well
-        for (let i = 1; i <= 114; i++) {
+        const res = await fetch('/dashboard/api/failed', {
+            method: 'POST',
+            body: qariId
+        })
+        const array = (await res.json()).missed;
+        for (let index = 1; index <= array.length; index++) {
+            const i = array[index]
             const surahNumber = String(i).padStart(3, '0');
             const remoteUrl = `${host}/${surahNumber}.mp3`;
 
