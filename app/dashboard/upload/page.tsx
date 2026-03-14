@@ -34,7 +34,7 @@ const Page = () => {
             const remoteUrl = `${host}/${surahNumber}.mp3`;
 
             try {
-                const res = await fetch('/api/upload', {
+                const res = await fetch('/dashboard/api/upload', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
