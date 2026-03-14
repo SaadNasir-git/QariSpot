@@ -1,4 +1,4 @@
-export const maxDuration = 300;
+export const maxDuration = 500;
 
 import { NextRequest, NextResponse } from 'next/server';
 import getDatabaseConnection from "@/lib/mysql2";
@@ -9,9 +9,16 @@ import { Readable } from 'stream';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegPath from 'ffmpeg-static';
 import { tryCatchBlock } from '@/lib/trycatchBlock';
+import { existsSync } from 'fs';
 
 // Tell fluent-ffmpeg where to find the binary (Crucial for Vercel)
-ffmpeg.setFfmpegPath(ffmpegPath as string);
+// Verify FFmpeg path exists (Debugging step)
+if (!ffmpegPath || !existsSync(ffmpegPath)) {
+    console.error(`[FFmpeg] Binary not found at: ${ffmpegPath}`);
+} else {
+    console.log(`[FFmpeg] Binary found at: ${ffmpegPath}`);
+    ffmpeg.setFfmpegPath(ffmpegPath);
+}
 
 // Cloudinary Config
 cloudinary.config({
