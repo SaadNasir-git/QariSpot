@@ -1,4 +1,4 @@
-export const maxDuration = 500;
+export const maxDuration = 300;
 
 import { NextRequest, NextResponse } from 'next/server';
 import getDatabaseConnection from "@/lib/mysql2";
