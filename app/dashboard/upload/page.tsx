@@ -16,10 +16,10 @@ const Page = () => {
         // Assuming you have a way to get qariId (maybe from another input or state)
         // For this example, I'm treating the input as the Remote Reciter ID (for the URL)
         // And I'm hardcoding or assuming you have a `qariId` state variable for your DB.
-        const reciterId = inputRef.current.value;
+        const host = inputRef.current.value;
         const qariId = QariIdRef.current.value;
 
-        if (!reciterId || !qariId) {
+        if (!host || !qariId) {
             alert('Please ensure Reciter ID and Qari ID are set.');
             return;
         }
@@ -31,10 +31,10 @@ const Page = () => {
         // You can increase concurrency if your server handles it well
         for (let i = 1; i <= 114; i++) {
             const surahNumber = String(i).padStart(3, '0');
-            const remoteUrl = `https://download.tvquran.com/download/${reciterId}/${surahNumber}.mp3`;
+            const remoteUrl = `${host}/${surahNumber}.mp3`;
 
             try {
-                const res = await fetch('/dashboard/api/upload', {
+                const res = await fetch('/api/upload', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -71,7 +71,7 @@ const Page = () => {
             <form onSubmit={onSubmit} className="space-y-2">
                 <div className="w-full">
                     <label htmlFor="reciter" className="block mb-2">
-                        Reciter ID:
+                        Host:
                     </label>
                     <input
                         type="text"
