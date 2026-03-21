@@ -34,7 +34,8 @@ async function getSurah(qariId: string) {
         body: JSON.stringify({
           qariId,
           offset: 0
-        })
+        }),
+        next: { revalidate: 3600 }
       })
       if (!reponse.ok) {
         return [];
