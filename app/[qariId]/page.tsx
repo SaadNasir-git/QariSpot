@@ -48,6 +48,7 @@ async function getSurah(qariId: string): Promise<surah[]> {
 export async function generateMetadata({ params }: { params: Promise<{ qariId: string }> }): Promise<Metadata> {
   const { qariId } = await params;
   const qariData = await getQariData(qariId);
+  const domain = process.env.NEXT_PUBLIC_DOMAIN!;
 
   if (!qariData) {
     return {
@@ -58,17 +59,19 @@ export async function generateMetadata({ params }: { params: Promise<{ qariId: s
   const title = `${qariData.name} - Quran Recitations`;
   const description = `Listen to the beautiful recitations of the Holy Quran by ${qariData.name}. Stream high quality audio online.`;
   const imageUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/w_1200,h_630,c_fill/${qariData.picUrl}`;
+  const absoluteUrl = `${domain}/${qariId}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/qari/${qariId}`,
+      canonical: absoluteUrl,
     },
     openGraph: {
       title,
       description,
       type: 'profile',
+      url: absoluteUrl,
       images: [{
         url: imageUrl,
         width: 1200,
@@ -88,7 +91,6 @@ export async function generateMetadata({ params }: { params: Promise<{ qariId: s
     }
   };
 }
-
 
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qaris`); 
