@@ -10,15 +10,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const dynamicEntries: MetadataRoute.Sitemap = dynamicItems.map((item: any) => ({
       url: `${BASE_URL}/${item.id}`,
-      lastModified: new Date(item.createdAt),
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
     }));
-    
+
     return [
       {
         url: BASE_URL,
         lastModified: new Date(),
         changeFrequency: 'yearly',
-        priority: 1,
+        priority: 1
       },
       ...dynamicEntries
     ];

@@ -11,6 +11,7 @@ const Card = ({ imageUrl, QariName }: { imageUrl: string, QariName: string }) =>
           className="object-cover rounded-md sm:rounded-none"
           style={{ objectPosition: 'center 20%' }}
           alt={QariName}
+          loading="eager"
         />
       </div>
       <div className="w-full h-auto sm:h-10 pl-1.5 py-2 sm:py-3 text-white text-sm sm:text-base text-left">
