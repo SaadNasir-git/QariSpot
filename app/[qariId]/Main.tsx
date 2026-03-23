@@ -245,6 +245,5 @@ export default MainQariPage
       <span className="font-medium text-sm">Load More Surahs</span>
 
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity -z-10" />
-    </button>
-  </div>
+    </button></div>
   */}
