@@ -13,9 +13,9 @@ import { SWController } from '@/components/SWController';
 import { Suspense } from 'react';
 import Loading from './loading';
 
-const APP_NAME = "QariSpot App";
-const APP_DEFAULT_TITLE = "QariSpot App";
-const APP_TITLE_TEMPLATE = "%s - App";
+const APP_NAME = "QariSpot";
+const APP_DEFAULT_TITLE = "QariSpot";
+const APP_TITLE_TEMPLATE = "%s";
 const APP_DESCRIPTION = 'Listen to the Holy Quran by renowned Qaris';
 
 export const metadata: Metadata = {
