@@ -74,6 +74,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GTM_ID = 'GTM-KGRZSLK7';
+
 export const viewport: Viewport = {
   themeColor: "#FFFFFF",
 };
