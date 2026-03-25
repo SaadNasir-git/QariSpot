@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <div className={`${amiri700.className} dark pl-1 w-full bg-transparent mb-2 flex justify-between`}>
       <Link href={'/'} className='w-44 flex justify-center items-center gap-2'>
-        <img src={'/quran.svg'} alt="Quran" className='w-14' />
+        <img src={'/quran.svg'} alt="Quran" className='w-14 h-14' />
         <span className='font-extrabold text-2xl text-white'>
           QariSpot
         </span>
