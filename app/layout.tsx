@@ -12,6 +12,7 @@ import { AudioIdProvider } from '@/contexts/AudioContext';
 import { SWController } from '@/components/SWController';
 import { Suspense } from 'react';
 import Loading from './loading';
+import Script from 'next/script';
 
 const APP_NAME = "QariSpot";
 const APP_DEFAULT_TITLE = "QariSpot";
