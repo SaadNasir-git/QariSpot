@@ -110,6 +110,32 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
+        <Script
+          id="schema-org"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "QariSpot",
+              "url": "https://qari-spot.vercel.app",
+              "description": "Listen to the Holy Quran by renowned Qaris",
+              "applicationCategory": "Multimedia",
+              "operatingSystem": "Web",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "creator": {
+                "@type": "Organization",
+                "name": "QariSpot"
+              },
+              "keywords": "Quran, Qari, Recitation, Tajweed, Islamic, Audio"
+            })
+          }}
+        />
         <SerwistProvider swUrl="/sw.js">
           <LibraryProvider>
             <AudioIdProvider>
