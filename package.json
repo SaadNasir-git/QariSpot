@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "axios": "^1.13.5",
     "browser-image-compression": "^2.0.2",
     "cloudinary": "^2.9.0",
