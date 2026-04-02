@@ -3,6 +3,29 @@ import { v2 as cloudinary } from "cloudinary";
 import { tryCatchBlock } from '@/lib/trycatchBlock';
 import { inngest } from '@/lib/inngest/client';
 
+cloudinary.config({
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+export const uploadToCloudinary = (buffer: Buffer, publicId?: string): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                resource_type: 'auto',
+                upload_preset: process.env.CLOUDINARY_PRESET_NAME,
+                chunk_size: 20 * 1024 * 1024,
+            },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
+        uploadStream.end(buffer);
+    });
+};
+
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
