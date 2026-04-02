@@ -118,7 +118,7 @@ const uploadFilesEnhanced = inngest.createFunction(
         const TOTAL_SURAHS = 114;
         const results = [];
 
-        for (let batchStart = 1; batchStart < TOTAL_SURAHS; batchStart += BATCH_SIZE) {
+        for (let batchStart = 1; batchStart <= TOTAL_SURAHS; batchStart += BATCH_SIZE) {
             const batchEnd = Math.min(batchStart + BATCH_SIZE - 1, TOTAL_SURAHS - 1);
             const batchNumbers = Array.from(
                 { length: batchEnd - batchStart + 1 },
