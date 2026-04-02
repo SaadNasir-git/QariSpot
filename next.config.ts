@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    serverExternalPackages: ['fluent-ffmpeg', 'ffmpeg-static'],
+    serverExternalPackages: ["@ffmpeg-installer/ffmpeg", "fluent-ffmpeg"],
     async headers() {
         return [
             {
