@@ -18,50 +18,50 @@ const Page = () => {
         // And I'm hardcoding or assuming you have a `qariId` state variable for your DB.
         const host = inputRef.current.value;
         const qariId = QariIdRef.current.value;
-
+        
         if (!host || !qariId) {
             alert('Please ensure Reciter ID and Qari ID are set.');
             return;
         }
-
+        
         setDownloading(true);
         let failedCount = 0;
-
+        
         // Process files sequentially (1 by 1) to ensure stability
         // You can increase concurrency if your server handles it well
-        const res = await fetch('/dashboard/api/failed', {
+        // const failedres = await fetch('/dashboard/api/failed', {
+        //     method: 'POST',
+        //     body: qariId
+        // })
+        // const array = (await failedres.json()).missed;
+        const res = await fetch('/dashboard/api/upload', {
             method: 'POST',
-            body: qariId
-        })
-        const array = (await res.json()).missed;
-        for (let index = 1; index <= array.length; index++) {
-            const i = array[index]
-            const surahNumber = String(i).padStart(3, '0');
-            const remoteUrl = `${host}/${surahNumber}.mp3`;
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: host,
+                qariId: qariId
+            })
+        });
+        // for (let index = 1; index <= array.length; index++) {
+            // const i = array[index]
+            // const surahNumber = String(i).padStart(3, '0');
+            // const remoteUrl = `${host}/${surahNumber}.mp3`;
 
-            try {
-                const res = await fetch('/dashboard/api/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        url: remoteUrl,
-                        qariId: qariId
-                    })
-                });
+        //     try {
 
-                const data = await res.json();
+        //         const data = await res.json();
 
-                if (res.ok) {
-                    console.log(`Successfully processed Surah ${i}`);
-                } else {
-                    console.error(`Failed Surah ${i}:`, data.message);
-                    failedCount++;
-                }
-            } catch (err) {
-                console.error(`Network error on Surah ${i}`, err);
-                failedCount++;
-            }
-        }
+        //         if (res.ok) {
+        //             console.log(`Successfully processed Surah ${i}`);
+        //         } else {
+        //             console.error(`Failed Surah ${i}:`, data.message);
+        //             failedCount++;
+        //         }
+        //     } catch (err) {
+        //         console.error(`Network error on Surah ${i}`, err);
+        //         failedCount++;
+        //     }
+        // }
 
         setDownloading(false);
 
