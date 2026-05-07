@@ -15,10 +15,10 @@ const SideMenu = () => {
                 <button onClick={() => setisOpen(false)} className='w-full flex items-center h-10 justify-end'>
                     <X className='text-white'/>
                 </button>
-                <Link onClick={() => setisOpen(false)} href={'/'} className='text-lg w-full h-5 flex justify-center items-center p-10 bg-[#1A1A1A] rounded-2xl'>
+                <Link onClick={() => setisOpen(false)} href={'/'} className='text-lg w-full h-5 flex justify-center items-center p-10 bg-[#1A1A1A] rounded-2xl text-white'>
                     Home
                 </Link>
-                <Link onClick={() => setisOpen(false)} href={'/playlist'} className='text-lg w-full h-5 flex justify-center items-center p-10 bg-[#1A1A1A] rounded-2xl'>
+                <Link onClick={() => setisOpen(false)} href={'/playlist'} className='text-lg w-full h-5 flex justify-center items-center p-10 bg-[#1A1A1A] rounded-2xl text-white'>
                     Playlist
                 </Link>
             </div>
