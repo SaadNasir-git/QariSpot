@@ -12,8 +12,6 @@ import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
 const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Promise<surah[]> }) => {
-  // const [surahData, setSurahData] = useState(use(surah));
-  // const [offset, setOffset] = useState<number>(10)
   const qari = use(qariData)
   const surahData = use(surah)
   const [filteredSurahs, setFilteredSurahs] = useState(use(surah));
@@ -81,14 +79,6 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
     setSearchQuery('');
     searchInputRef.current?.focus({ preventScroll: true });
   }, [searchInputRef])
-
-  // const loadMore = useCallback(async () => {
-  //   if (qari?.id) {
-  //     const res = await axios.post('/api/surah', { qariId: qari.id, offset })
-  //     setSurahData([...surahData, res.data.surah])
-  //     setOffset(offset + 10)
-  //   }
-  // }, [offset])
 
   return (
     <div className="relative w-full">
@@ -222,28 +212,3 @@ const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Pro
 }
 
 export default MainQariPage
-
-{/*
-  <div className='w-full z-50 py-5 flex justify-center items-center pointer-events-none'>
-    <button
-      onClick={loadMore}
-      className="group relative pointer-events-auto bg-gradient-to-r from-green-600 to-green-500 
-           hover:from-green-500 hover:to-green-400 text-white 
-           px-4 py-3 rounded-full shadow-2xl shadow-green-500/20
-           flex items-center gap-3 transition-all duration-300 
-           hover:scale-105 active:scale-95 border border-white/10
-           backdrop-blur-sm"
-    >
-      <div className="relative">
-        <ArrowBigDownDash
-          size={22}
-          className="animate-bounce group-hover:animate-none transition-transform translate-y-0.5"
-        />
-        <div className="absolute inset-0 animate-ping bg-white/20 rounded-full opacity-0 group-hover:opacity-100" />
-      </div>
-
-      <span className="font-medium text-sm">Load More Surahs</span>
-
-      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-green-300 opacity-0 group-hover:opacity-20 blur-xl transition-opacity -z-10" />
-    </button></div>
-  */}
