@@ -104,8 +104,10 @@ export async function generateStaticParams() {
 const QariPage = async ({ params }: { params: Promise<{ qariId: string }> }) => {
   const { qariId } = await params;
   
-  const qariData = await getQariData(qariId);
-  const surah = await getSurah(qariId);
+  const [qariData, surah] = await Promise.all([
+    getQariData(qariId),
+    getSurah(qariId)
+  ]);
 
   if (!qariData) {
     notFound();
