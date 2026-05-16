@@ -11,6 +11,7 @@ import { SerwistProvider } from "./serwist";
 import { AudioIdProvider } from '@/contexts/AudioContext';
 import { SWController } from '@/components/SWController';
 import Script from 'next/script';
+import { Suspense } from 'react';
 
 const APP_NAME = "QariSpot";
 const APP_DEFAULT_TITLE = "QariSpot";
@@ -144,7 +145,9 @@ export default function RootLayout({
                   {children}
                 </main>
               </div>
-              <AudioPlayer />
+              <Suspense fallback={null}>
+                <AudioPlayer />
+              </Suspense>
             </AudioIdProvider>
           </LibraryProvider>
           <SWController />
