@@ -4,17 +4,15 @@
 
 import AudioCard from '@/components/AudioCard';
 import { Amiri } from 'next/font/google';
-import { use, useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 const amiri700 = Amiri({ weight: '700' })
 import { CldImage } from 'next-cloudinary';
 import { Search, X } from 'lucide-react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 
-const MainQariPage = ({ qariData, surah }: { qariData: Promise<qari>, surah: Promise<surah[]> }) => {
-  const qari = use(qariData)
-  const surahData = use(surah)
-  const [filteredSurahs, setFilteredSurahs] = useState(use(surah));
+const MainQariPage = ({ qari, surahData }: { qari: qari, surahData: surah[] }) => {
+  const [filteredSurahs, setFilteredSurahs] = useState(surahData);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement>(null);

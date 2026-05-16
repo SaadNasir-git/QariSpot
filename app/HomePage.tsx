@@ -5,8 +5,7 @@ import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import { CloudAlert } from "lucide-react"
 
-const HomePage = ({ fetchedQaris }: { fetchedQaris: Promise<qari[]> }) => {
-    const Qaris = use(fetchedQaris)
+const HomePage = ({ Qaris }: { Qaris: qari[] }) => {
     const [isOnline, setIsOnline] = useState(true)
 
     useEffect(() => {

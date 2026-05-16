@@ -1,27 +1,9 @@
 import { Metadata } from 'next';
 import MainQariPage from './Main';
 import { notFound } from 'next/navigation';
-
-async function getQariData(qariId: string): Promise<qari | null> {
-  try {
-    if (!qariId) return null;
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qari`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ qariId }),
-      next: { revalidate: 3600 }
-    });
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    return data.data || null;
-  } catch (error) {
-    console.error("Error fetching Qari:", error);
-    return null;
-  }
-}
+import { Suspense } from 'react';
+import Loading from '../loading';
+import { getQariData, getQaris } from '@/lib/data';
 
 async function getSurah(qariId: string): Promise<surah[]> {
   try {
@@ -36,7 +18,7 @@ async function getSurah(qariId: string): Promise<surah[]> {
       }),
       next: { revalidate: 3600 }
     });
-    
+
     if (!response.ok) return [];
     return (await response.json()).surah || [];
   } catch (error) {
@@ -93,9 +75,8 @@ export async function generateMetadata({ params }: { params: Promise<{ qariId: s
 }
 
 export async function generateStaticParams() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qaris`); 
-  const qaris = (await res.json()).data;
- 
+  const qaris = await getQaris()
+
   return qaris.map((qari) => ({
     qariId: String(qari.id)
   }));
@@ -103,7 +84,7 @@ export async function generateStaticParams() {
 
 const QariPage = async ({ params }: { params: Promise<{ qariId: string }> }) => {
   const { qariId } = await params;
-  
+
   const [qariData, surah] = await Promise.all([
     getQariData(qariId),
     getSurah(qariId)
@@ -128,11 +109,12 @@ const QariPage = async ({ params }: { params: Promise<{ qariId: string }> }) => 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
-      <MainQariPage 
-        qariData={Promise.resolve(qariData)} 
-        surah={Promise.resolve(surah)} 
-      />
+      <Suspense fallback={<Loading />}>
+        <MainQariPage
+          qari={qariData}
+          surahData={surah}
+        />
+      </Suspense>
     </>
   );
 }

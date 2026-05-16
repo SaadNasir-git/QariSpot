@@ -10,8 +10,6 @@ import { Toaster } from 'sileo';
 import { SerwistProvider } from "./serwist";
 import { AudioIdProvider } from '@/contexts/AudioContext';
 import { SWController } from '@/components/SWController';
-import { Suspense } from 'react';
-import Loading from './loading';
 import Script from 'next/script';
 
 const APP_NAME = "QariSpot";
@@ -101,7 +99,7 @@ export default function RootLayout({
             `,
           }}
         />
-        
+
         <noscript>
           <iframe
             src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
@@ -110,10 +108,9 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
-        <Script
+        <script
           id="schema-org"
           type="application/ld+json"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
@@ -140,16 +137,14 @@ export default function RootLayout({
           <LibraryProvider>
             <AudioIdProvider>
               <Toaster position="top-right" />
-              <Suspense fallback={<Loading />}>
-                <Header />
-                <div className='md:grid md:grid-cols-[auto_1fr] h-full gap-2 md:rounded-2xl overflow-hidden'>
-                  <SideBar />
-                  <main className='bg-gradient-to-b from-[#0A0A0A] to-[#141414] md:rounded-2xl transition-all duration-300 ease-in-out h-full md:border md:border-white/5 shadow-2xl overflow-auto'>
-                    {children}
-                  </main>
-                </div>
-                <AudioPlayer />
-              </Suspense>
+              <Header />
+              <div className='md:grid md:grid-cols-[auto_1fr] h-full gap-2 md:rounded-2xl overflow-hidden'>
+                <SideBar />
+                <main className='bg-gradient-to-b from-[#0A0A0A] to-[#141414] md:rounded-2xl transition-all duration-300 ease-in-out h-full md:border md:border-white/5 shadow-2xl overflow-auto'>
+                  {children}
+                </main>
+              </div>
+              <AudioPlayer />
             </AudioIdProvider>
           </LibraryProvider>
           <SWController />

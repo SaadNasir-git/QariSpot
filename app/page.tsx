@@ -1,3 +1,4 @@
+import { getQaris } from "@/lib/data";
 import HomePage from "./HomePage";
 
 export const dynamic = 'force-dynamic';
@@ -5,22 +6,17 @@ export const revalidate = 0;
 
 const fetchQaris = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN}/api/qaris`);
-    if(res.ok){
-       const data = (await res.json()).data
-       return data
-    } else
-      return []
+    return await getQaris();
   } catch (error) {
     return []
   }
 }
 
-const Home = () => {
-  let Qaris = fetchQaris()
+const Home = async() => {
+  let Qaris = await fetchQaris()
 
   return (
-    <HomePage fetchedQaris={Qaris} />
+    <HomePage Qaris={Qaris} />
   )
 }
 

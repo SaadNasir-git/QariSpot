@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/_next/static/chunks/app/',
+      disallow: '/api/', 
     },
     sitemap: 'https://qari-spot.vercel.app/sitemap.xml',
   }
