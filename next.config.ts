@@ -7,35 +7,23 @@ const nextConfig: NextConfig = {
             {
                 source: '/(.*)',
                 headers: [
+                    { key: 'X-Content-Type-Options', value: 'nosniff' },
+                    { key: 'X-Frame-Options', value: 'DENY' },
+                    { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
                     {
-                        key: 'X-Content-Type-Options',
-                        value: 'nosniff',
-                    },
-                    {
-                        key: 'X-Frame-Options',
-                        value: 'DENY',
-                    },
-                    {
-                        key: 'Referrer-Policy',
-                        value: 'strict-origin-when-cross-origin',
-                    },
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: blob: *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self' https://fonts.gstatic.com; worker-src 'self' blob:;"
+                    }
                 ],
             },
             {
                 source: '/sw.js',
                 headers: [
-                    {
-                        key: 'Content-Type',
-                        value: 'application/javascript; charset=utf-8',
-                    },
-                    {
-                        key: 'Cache-Control',
-                        value: 'no-cache, no-store, must-revalidate',
-                    },
+                    { key: 'Content-Type', value: 'application/javascript; charset=utf-8' },
+                    { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
                     {
                         key: 'Content-Security-Policy',
-                        // Added 'unsafe-eval' for development and blob: for worker execution
-                        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; connect-src 'self' *.cloudinary.com;",
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; worker-src 'self' blob:; connect-src 'self' *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: blob: *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self' https://fonts.gstatic.com;"
                     },
                 ],
             },
