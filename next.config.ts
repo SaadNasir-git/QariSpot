@@ -19,12 +19,6 @@ const nextConfig: NextConfig = {
                         key: 'Referrer-Policy',
                         value: 'strict-origin-when-cross-origin',
                     },
-                    // OPTIONAL BUT RECOMMENDED: Add a global CSP for your main HTML pages too
-                    // Otherwise, only your SW is protected by CSP.
-                    {
-                        key: 'Content-Security-Policy',
-                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: blob: *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; worker-src 'self' blob:;"
-                    }
                 ],
             },
             {
@@ -40,8 +34,8 @@ const nextConfig: NextConfig = {
                     },
                     {
                         key: 'Content-Security-Policy',
-                        // UPDATED: Added GTM and Google Analytics domains
-                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; worker-src 'self' blob:; connect-src 'self' *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com; img-src 'self' data: blob: *.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com;",
+                        // Added 'unsafe-eval' for development and blob: for worker execution
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline'; worker-src 'self' blob:; connect-src 'self' *.cloudinary.com;",
                     },
                 ],
             },
